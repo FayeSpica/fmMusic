@@ -1,7 +1,7 @@
 # fmMusic
 A simple Android music player. 
 简单的安卓音乐播放器实现。
-
+界面设计参考网易云、htc sense7.0内置音乐播放器
 ##ScreenShots
 <div><img width="240" height="420" src="https://github.com/SteiensGate/fmMusic/raw/master/Screenshots/Screenshot_20170122-195609.png"/>
 <img width="240" height="420" src="https://github.com/SteiensGate/fmMusic/raw/master/Screenshots/Screenshot_20170122-201037.png"/>
