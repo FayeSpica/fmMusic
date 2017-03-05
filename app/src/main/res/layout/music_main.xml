@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:background="@android:color/black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        tools:context=".MainActivity"
+        android:layout_weight="1"
+        android:background="@android:color/transparent">
+
+        <TabHost
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/musicTab">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:keepScreenOn="true"
+                    android:baselineAligned="false"
+                    android:divider="?android:attr/actionModeBackground"
+                    android:fadeScrollbars="false" />
+
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <cn.tonyshy.music.fmmusic.SquareLayout
+                        android:id="@+id/tab1"
+                        android:layout_width="match_parent"
+                        android:layout_height="317dp"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/albumImageView"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="false" />
+                    </cn.tonyshy.music.fmmusic.SquareLayout>
+
+                    <LinearLayout
+                        android:id="@+id/tab2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <FrameLayout
+                            android:id="@+id/list_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <include layout="@layout/content_music_play_main"/>
+                        </FrameLayout>
+
+                    </LinearLayout>
+
+                </FrameLayout>
+            </LinearLayout>
+        </TabHost>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@android:drawable/screen_background_dark_transparent">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/play_icn_loop_prs"
+                    android:id="@+id/playMode"
+                    android:background="@android:color/transparent"
+                    android:layout_gravity="center_vertical"
+                    android:onClick="onPlayModeOclick"/>
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/play_btn_prev"
+                    android:id="@+id/btnPre"
+                    android:layout_weight="2"
+                    android:background="@android:color/transparent"
+                    android:layout_gravity="center_vertical" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/play_btn_play_prs"
+                    android:id="@+id/BtnPlayorPause"
+                    android:layout_weight="4"
+                    android:background="@android:color/transparent"
+                    android:layout_gravity="center_vertical" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/play_btn_next"
+                    android:id="@+id/btnNext"
+                    android:layout_weight="2"
+                    android:background="@android:color/transparent"
+                    android:layout_gravity="center_vertical" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/play_icn_src_prs"
+                    android:id="@+id/imageButton3"
+                    android:background="@android:color/transparent"
+                    android:layout_gravity="center_vertical"
+                    android:visibility="invisible" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/MusicSeekBar"
+                    android:layout_weight="1"
+                    android:progressTint="@color/theme_color_primary"
+                    android:thumb="@drawable/abc_btn_switch_to_on_mtrl_00001r" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:text="    "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/Dtime"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/white"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="16dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/LeftTime"
+                    android:text="    "
+                    android:textAlignment="textEnd"
+                    android:textColor="@android:color/white"
+                    android:layout_weight="1"
+                    android:layout_marginRight="16dp" />
+
+            </TableRow>
+
+        </TableLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

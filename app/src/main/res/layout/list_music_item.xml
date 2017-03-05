@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants">
+
+    <RelativeLayout
+        android:layout_width="50dp"
+        android:layout_height="50dp">
+
+
+        <ImageView
+            android:id="@+id/musicImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="歌曲名"
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:width="160dp"/>
+
+        <TextView
+            android:id="@+id/Artist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="艺术家"
+            android:layout_below="@+id/title"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textSize="12dp"
+            android:width="240dp"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/musicBtnMore"
+            android:minWidth="18dp"
+            android:minHeight="18dp"
+            app:srcCompat="@drawable/music_icn_more"
+            android:background="@android:color/transparent"
+            android:layout_alignRight="@+id/title"
+            android:layout_centerVertical="false"
+            android:layout_centerInParent="true" />
+
+
+    </RelativeLayout>
+</LinearLayout>
