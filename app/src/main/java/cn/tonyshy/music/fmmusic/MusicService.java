@@ -3,12 +3,14 @@ package cn.tonyshy.music.fmmusic;
 /**
  * Created by Liaowm5 on 2016-12-27.
  */
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Binder;
@@ -17,12 +19,16 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
+
 import cn.tonyshy.music.fmmusic.Music.MusicInfo;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class MusicService extends Service {
+
+    private int NOTIFICATION_ID=2;
 
     private ArrayList<MusicInfo> musicDirList = new ArrayList<MusicInfo>();
     public int musicIndex = 0;
@@ -94,7 +100,8 @@ public class MusicService extends Service {
             mp.setDataSource(musicDirList.get(musicIndex).getMusicPath());
             mp.prepare();
             mp.start();
-            startForeground(1,getNotification(getCurrentPlayingInfo().getmusicTitle(),0));
+            //getNotificationManager().notify(NOTIFICATION_ID,getNotification());
+            startForeground(NOTIFICATION_ID,getNotification());
         } catch (Exception e) {
             Log.d("hint","can't get to the song"+musicDirList.get(musicIndex).getMusicPath());
             Log.d("hint",Environment.getDataDirectory().getAbsolutePath());
@@ -229,25 +236,39 @@ public class MusicService extends Service {
             return null;
     }
 
+    private RemoteViews mRemoteViews;
+
     private NotificationManager getNotificationManager(){
         return (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
     }
+    @TargetApi(16)
+    private Notification getNotification(){
+        initRemoteView();
+        Intent intent=new Intent(this,MusicActivity.class);
+        PendingIntent pi=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
 
-    private Notification getNotification(String title, int progress){
-        Intent intent=new Intent(this,MainActivity.class);
-        PendingIntent pi=PendingIntent.getActivity(this,0,intent,0);
         NotificationCompat.Builder builder=new NotificationCompat.Builder(this);
 
-        builder.setSmallIcon(R.drawable.actionbar_music_selected);
-        builder.setLargeIcon(getCurrentPlayingInfo().getBitmap());
-        builder.setContentIntent(pi);
-        builder.setContentTitle(title);
-        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-        builder.setOngoing(true);
-        if(progress>0){
-            builder.setContentText(progress+"%");
-            builder.setProgress(100,progress,false);
-        }
-        return builder.build();
+        Notification notification=
+        builder.setSmallIcon(R.drawable.actionbar_music_selected)
+                .setLargeIcon(getCurrentPlayingInfo().getBitmap())
+                .setContentIntent(pi)
+                .setContentText(getCurrentPlayingInfo().getmusicTitle()+" - "+getCurrentPlayingInfo().getMusicArtist())
+                .setCustomBigContentView(mRemoteViews)
+                .setPriority(Notification.PRIORITY_MAX)
+                .build();
+
+
+        return notification;
     }
+    private void initRemoteView(){
+        mRemoteViews=new RemoteViews(getPackageName(),R.layout.notification_layout);
+        mRemoteViews.setTextViewText(R.id.re_title,getCurrentPlayingInfo().getmusicTitle());
+        mRemoteViews.setTextViewText(R.id.re_Artist,getCurrentPlayingInfo().getMusicArtist());
+        mRemoteViews.setImageViewBitmap(R.id.re_musicImageView,getCurrentPlayingInfo().getBitmap());
+        mRemoteViews.setImageViewBitmap(R.id.re_ibtn_pause, BitmapFactory.decodeResource(getResources(),R.drawable.play_btn_pause));
+        mRemoteViews.setImageViewBitmap(R.id.re_ibtn_pre, BitmapFactory.decodeResource(getResources(),R.drawable.play_btn_prev));
+        mRemoteViews.setImageViewBitmap(R.id.re_ibtn_next, BitmapFactory.decodeResource(getResources(),R.drawable.play_btn_next));
+    }
+
 }
