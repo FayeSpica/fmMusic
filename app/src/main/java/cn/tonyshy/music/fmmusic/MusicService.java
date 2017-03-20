@@ -4,16 +4,19 @@ package cn.tonyshy.music.fmmusic;
  * Created by Liaowm5 on 2016-12-27.
  */
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
-
+import android.support.v4.app.NotificationCompat;
 import cn.tonyshy.music.fmmusic.Music.MusicInfo;
 
 import java.util.ArrayList;
@@ -91,6 +94,7 @@ public class MusicService extends Service {
             mp.setDataSource(musicDirList.get(musicIndex).getMusicPath());
             mp.prepare();
             mp.start();
+            startForeground(1,getNotification(getCurrentPlayingInfo().getmusicTitle(),0));
         } catch (Exception e) {
             Log.d("hint","can't get to the song"+musicDirList.get(musicIndex).getMusicPath());
             Log.d("hint",Environment.getDataDirectory().getAbsolutePath());
@@ -223,5 +227,27 @@ public class MusicService extends Service {
             return musicDirList.get(musicIndex);
         else
             return null;
+    }
+
+    private NotificationManager getNotificationManager(){
+        return (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+    }
+
+    private Notification getNotification(String title, int progress){
+        Intent intent=new Intent(this,MainActivity.class);
+        PendingIntent pi=PendingIntent.getActivity(this,0,intent,0);
+        NotificationCompat.Builder builder=new NotificationCompat.Builder(this);
+
+        builder.setSmallIcon(R.drawable.actionbar_music_selected);
+        builder.setLargeIcon(getCurrentPlayingInfo().getBitmap());
+        builder.setContentIntent(pi);
+        builder.setContentTitle(title);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setOngoing(true);
+        if(progress>0){
+            builder.setContentText(progress+"%");
+            builder.setProgress(100,progress,false);
+        }
+        return builder.build();
     }
 }
