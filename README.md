@@ -8,11 +8,12 @@ A simple Android music player.
 <img width="240" height="420" src="https://github.com/SteiensGate/fmMusic/raw/master/Screenshots/Screenshot_20170122-202052.png"/>
 <img width="240" height="420" src="https://github.com/SteiensGate/fmMusic/raw/master/Screenshots/Screenshot_20170122-202115.png"/>
 <img width="240" height="420" src="https://github.com/SteiensGate/fmMusic/raw/master/Screenshots/Screenshot_20170122-232426.png"/></div>
-##Credits
+
+## Credits
 
  - [remusic](https://github.com/aa112901/remusic)
 
-##Change Log
+## Change Log
 
 ### 1.01
   2017/3/20
