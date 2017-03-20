@@ -69,7 +69,7 @@
     <color name="bs_divider_color">#1f000000</color>
     <color name="bubbleBg">@color/themeColor</color>
     <color name="buttonPressedTextColor">#ffffffff</color>
-    <color name="buttonTextColor">#ff333333</color>
+    <color name="buttonTextColor">#333333</color>
     <color name="button_material_dark">#ff5a595b</color>
     <color name="button_material_light">#ffd6d7d7</color>
     <color name="chatBarEditHintTextColor">@color/commentBarEditHintTextColor</color>
@@ -81,7 +81,7 @@
     <color name="commentBarEditTextColor">#ff333333</color>
     <color name="commentBarLineColor">@color/lineColor</color>
     <color name="commentBarPostDisableTextColor">#ff999999</color>
-    <color name="commentBarPostTextColor">#ff333333</color>
+    <color name="commentBarPostTextColor">#000000</color>
     <color name="contentTvColor">#ff333333</color>
     <color name="creamPlaylistChooseClassTitleColor">#ff333333</color>
     <color name="creamPlaylistEntranceHeaderBackground">#ffffffff</color>
@@ -225,8 +225,8 @@
     <color name="normalC7">@color/theme_color_c7_b2</color>
     <color name="normalC9">@color/theme_color_c9_blue</color>
     <color name="normalCa">@color/theme_color_ca_fff</color>
-    <color name="normalColor">#ff333333</color>
-    <color name="notification_bg">#fffafafa</color>
+    <color name="normalColor">#333333</color>
+    <color name="notification_bg">#959595</color>
     <color name="notification_content">#8a000000</color>
     <color name="notification_title">#de000000</color>
     <color name="playbarProgressColor">@color/themeColor</color>
