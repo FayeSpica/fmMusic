@@ -12,6 +12,9 @@ A simple Android music player.
 - [remusic](https://github.com/aa112901/remusic)
 
 ##Change Log
+### 1.01
+  2017/3/20
+  - 增加状态栏通知
 ### 1.0 
   2017/1/22
   - 实现基本功能: 播放列表、单曲循环/列表循环/随机播放
