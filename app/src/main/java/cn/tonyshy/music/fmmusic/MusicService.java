@@ -9,6 +9,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -100,8 +101,8 @@ public class MusicService extends Service {
             mp.setDataSource(musicDirList.get(musicIndex).getMusicPath());
             mp.prepare();
             mp.start();
-            //getNotificationManager().notify(NOTIFICATION_ID,getNotification());
-            startForeground(NOTIFICATION_ID,getNotification());
+            notifyUpdate();
+            //startForeground(NOTIFICATION_ID,getNotification());
         } catch (Exception e) {
             Log.d("hint","can't get to the song"+musicDirList.get(musicIndex).getMusicPath());
             Log.d("hint",Environment.getDataDirectory().getAbsolutePath());
@@ -111,13 +112,16 @@ public class MusicService extends Service {
     public void playOrPause() {
         if(mp.isPlaying()){
             mp.pause();
+            notifyUpdate();
         } else {
             mp.start();
+            notifyUpdate();
         }
     }
     public void stop() {
         if(mp != null) {
             mp.stop();
+            notifyUpdate();
             try {
                 mp.prepare();
                 mp.seekTo(0);
@@ -206,7 +210,8 @@ public class MusicService extends Service {
         mp.stop();
         mp.release();
         super.onDestroy();
-        System.exit(0);
+        //System.exit(0);
+        getNotificationManager().cancel(NOTIFICATION_ID);
     }
 
     @Override
@@ -250,7 +255,7 @@ public class MusicService extends Service {
         NotificationCompat.Builder builder=new NotificationCompat.Builder(this);
 
         Notification notification=
-        builder.setSmallIcon(R.drawable.actionbar_music_selected)
+                builder.setSmallIcon(R.drawable.actionbar_music_selected)
                 .setLargeIcon(getCurrentPlayingInfo().getBitmap())
                 .setContentIntent(pi)
                 .setContentText(getCurrentPlayingInfo().getmusicTitle()+" - "+getCurrentPlayingInfo().getMusicArtist())
@@ -261,14 +266,44 @@ public class MusicService extends Service {
 
         return notification;
     }
+
+    ComponentName component;
+
     private void initRemoteView(){
+        component= new ComponentName(this, MusicService.class);
         mRemoteViews=new RemoteViews(getPackageName(),R.layout.notification_layout);
         mRemoteViews.setTextViewText(R.id.re_title,getCurrentPlayingInfo().getmusicTitle());
         mRemoteViews.setTextViewText(R.id.re_Artist,getCurrentPlayingInfo().getMusicArtist());
         mRemoteViews.setImageViewBitmap(R.id.re_musicImageView,getCurrentPlayingInfo().getBitmap());
-        mRemoteViews.setImageViewBitmap(R.id.re_ibtn_pause, BitmapFactory.decodeResource(getResources(),R.drawable.play_btn_pause));
         mRemoteViews.setImageViewBitmap(R.id.re_ibtn_pre, BitmapFactory.decodeResource(getResources(),R.drawable.play_btn_prev));
         mRemoteViews.setImageViewBitmap(R.id.re_ibtn_next, BitmapFactory.decodeResource(getResources(),R.drawable.play_btn_next));
+
+        if(mp.isPlaying()){
+            mRemoteViews.setImageViewBitmap(R.id.re_ibtn_pause, BitmapFactory.decodeResource(getResources(),R.drawable.play_btn_pause));
+        }else{
+            mRemoteViews.setImageViewBitmap(R.id.re_ibtn_pause, BitmapFactory.decodeResource(getResources(),R.drawable.play_btn_play));
+        }
+
+        //增加控制Intent
+        Intent nextIntent = new Intent(NEXT_ACTION);
+        nextIntent.setComponent(component);
+        PendingIntent nextPIntent = PendingIntent.getService(this, 0, nextIntent, 0);
+        mRemoteViews.setOnClickPendingIntent(R.id.re_ibtn_next, nextPIntent);
+
+        Intent pauseIntent = new Intent(PLAY_OR_PAUSE_ACTION);
+        pauseIntent.setComponent(component);
+        PendingIntent pausePIntent = PendingIntent.getService(this, 0, pauseIntent, 0);
+        mRemoteViews.setOnClickPendingIntent(R.id.re_ibtn_pause, pausePIntent);
+
+        Intent preIntent = new Intent(PREVIOUS_ACTION);
+        preIntent.setComponent(component);
+        PendingIntent prePIntent = PendingIntent.getService(this, 0, preIntent, 0);
+        mRemoteViews.setOnClickPendingIntent(R.id.re_ibtn_pre, prePIntent);
+
+    }
+
+    private void notifyUpdate(){
+        getNotificationManager().notify(NOTIFICATION_ID,getNotification());
     }
 
 }
