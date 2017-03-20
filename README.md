@@ -7,7 +7,7 @@ A simple Android music player.
 <img width="240" height="420" src="https://github.com/SteiensGate/fmMusic/raw/master/Screenshots/Screenshot_20170122-201037.png"/>
 <img width="240" height="420" src="https://github.com/SteiensGate/fmMusic/raw/master/Screenshots/Screenshot_20170122-202052.png"/>
 <img width="240" height="420" src="https://github.com/SteiensGate/fmMusic/raw/master/Screenshots/Screenshot_20170122-202115.png"/>
-<img width="240" height="420" src="https://github.com/SteiensGate/fmMusic/raw/master/Screenshots/Screenshot_20170122-232426.png"/></div>
+<img width="240" height="420" src="https://github.com/SteiensGate/fmMusic/raw/master/Screenshots/Screenshot_20170122-232426.png"/>
 <img width="240" height="420" src="https://github.com/SteiensGate/fmMusic/raw/master/Screenshots/Screenshot_20170321-001006.png"/></div>
 
 ## Credits
