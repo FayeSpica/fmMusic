@@ -59,33 +59,7 @@ public class MusicService extends Service {
             Log.d("hint","can't get to the song");
             e.printStackTrace();
         }*/
-        //监听音频播放完的代码，实现音频的自动循环播放
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
-            @Override
-            public void onCompletion(MediaPlayer arg0) {
-                switch (playmode){
-                    case 1:
-                        nextMusic();
-                        Log.d("liaowm10","next");
-                        //mp.setLooping(false);
-                        break;
-                    case 2:
-                        Random rand = new Random();
-                        playAt(rand.nextInt(musicDirList.size()- 1));
-                        Log.d("liaowm10","rand");
-                        //mp.setLooping(false);
-                        break;
-                    case 3:
-                        mp.seekTo(0);
-                        mp.start();
-                        mp.setLooping(true);
-                        Log.d("liaowm10","one");
-                        break;
-                }
-
-            }
-        });
     }
     public void timing(int time) {
         Intent intent = new Intent(MusicService.PLAY_OR_PAUSE_ACTION);
@@ -102,7 +76,7 @@ public class MusicService extends Service {
             mp.prepare();
             mp.start();
             notifyUpdate();
-            //startForeground(NOTIFICATION_ID,getNotification());
+            startForeground(NOTIFICATION_ID,getNotification());
         } catch (Exception e) {
             Log.d("hint","can't get to the song"+musicDirList.get(musicIndex).getMusicPath());
             Log.d("hint",Environment.getDataDirectory().getAbsolutePath());
@@ -165,8 +139,9 @@ public class MusicService extends Service {
         }
     }
     @Override
-    public void onStart(Intent intent, int startId) {
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+    public int onStartCommand(Intent intent,int flags, int startId) {
+        //startForeground();
+        /*mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
             @Override
             public void onCompletion(MediaPlayer arg0) {
@@ -184,8 +159,36 @@ public class MusicService extends Service {
                 }
 
             }
+        });*/
+        //监听音频播放完的代码，实现音频的自动循环播放
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+            @Override
+            public void onCompletion(MediaPlayer arg0) {
+                switch (playmode){
+                    case 1:
+                        mp.seekTo(0);
+                        nextMusic();
+                        Log.d("liaowm10","next");
+                        //mp.setLooping(false);
+                        break;
+                    case 2:
+                        mp.seekTo(0);
+                        Random rand = new Random();
+                        playAt(rand.nextInt(musicDirList.size()- 1));
+                        Log.d("liaowm10","rand");
+                        //mp.setLooping(false);
+                        break;
+                    case 3:
+                        mp.seekTo(0);
+                        mp.start();
+                        mp.setLooping(true);
+                        Log.d("liaowm10","one");
+                        break;
+                }
+
+            }
         });
-        super.onStart(intent, startId);
 
         String action = intent.getAction();
         if(action!=null) {
@@ -204,6 +207,7 @@ public class MusicService extends Service {
                 preMusic();
             }
         }
+        return super.onStartCommand(intent,flags,startId);
     }
     @Override
     public void onDestroy() {
@@ -211,6 +215,7 @@ public class MusicService extends Service {
         mp.release();
         super.onDestroy();
         //System.exit(0);
+        stopForeground(true);
         getNotificationManager().cancel(NOTIFICATION_ID);
     }
 
@@ -256,12 +261,12 @@ public class MusicService extends Service {
 
         Notification notification=
                 builder.setSmallIcon(R.drawable.actionbar_music_selected)
-                .setLargeIcon(getCurrentPlayingInfo().getBitmap())
-                .setContentIntent(pi)
-                .setContentText(getCurrentPlayingInfo().getmusicTitle()+" - "+getCurrentPlayingInfo().getMusicArtist())
-                .setCustomBigContentView(mRemoteViews)
-                .setPriority(Notification.PRIORITY_MAX)
-                .build();
+                        .setLargeIcon(getCurrentPlayingInfo().getBitmap())
+                        .setContentIntent(pi)
+                        .setContentText(getCurrentPlayingInfo().getmusicTitle()+" - "+getCurrentPlayingInfo().getMusicArtist())
+                        .setCustomBigContentView(mRemoteViews)
+                        .setPriority(Notification.PRIORITY_MAX)
+                        .build();
 
 
         return notification;

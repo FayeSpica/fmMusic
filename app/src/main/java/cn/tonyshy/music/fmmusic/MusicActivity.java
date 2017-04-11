@@ -1,12 +1,16 @@
 package cn.tonyshy.music.fmmusic;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.gesture.Gesture;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -104,6 +108,13 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
                 //Log.d("liaowm5","arrayList.size()="+arrayList.size())
 
                 musicService.mp.start();
+            }
+        });
+        listView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                gestureDetector.onTouchEvent(motionEvent);
+                return false;
             }
         });
     }
@@ -332,12 +343,12 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
                 public boolean onFling(MotionEvent e1,
                                        MotionEvent e2, float velocityX,
                                        float velocityY) {
-                    if ((e2.getRawX() - e1.getRawX()) > 80) {
+                    if ((e2.getRawX() - e1.getRawX()) > 400) {
                         showNext();
                         return true;
                     }
 
-                    if ((e1.getRawX() - e2.getRawX()) > 80) {
+                    if ((e1.getRawX() - e2.getRawX()) > 400) {
                         showPre();
                         return true;
                     }
@@ -348,8 +359,9 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        gestureDetector.onTouchEvent(event);
-        return super.onTouchEvent(event);
+        if(gestureDetector.onTouchEvent(event))
+            return true;
+        return false;
     }
 
 
@@ -368,4 +380,5 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
         // 三元表达式控制2个页面的循环.
         tabhost.setCurrentTab(tabIndex = tabIndex == 0 ? tabIndex = 1 : --tabIndex);
     }
+
 }
