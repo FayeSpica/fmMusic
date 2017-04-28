@@ -21,25 +21,27 @@
         android:background="@android:color/transparent">
 
         <TabHost
+            android:id="@+id/musicTab"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/musicTab">
+            android:background="@android:color/transparent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@android:color/black"
                 android:orientation="vertical">
 
                 <TabWidget
                     android:id="@android:id/tabs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:keepScreenOn="true"
+                    android:background="@android:color/black"
                     android:baselineAligned="false"
-                    android:divider="?android:attr/actionModeBackground"
-                    android:fadeScrollbars="false" />
+                    android:divider="@android:drawable/screen_background_dark_transparent"
+                    android:fadeScrollbars="false"
+                    android:keepScreenOn="true" />
 
                 <FrameLayout
                     android:id="@android:id/tabcontent"
@@ -53,11 +55,11 @@
                         android:orientation="vertical">
 
                         <ImageView
+                            android:id="@+id/albumImageView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:id="@+id/albumImageView"
-                            android:scaleType="fitXY"
-                            android:adjustViewBounds="false" />
+                            android:adjustViewBounds="false"
+                            android:scaleType="fitXY" />
                     </cn.tonyshy.music.fmmusic.SquareLayout>
 
                     <LinearLayout
@@ -65,12 +67,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
+
                         <FrameLayout
                             android:id="@+id/list_container"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
-                            <include layout="@layout/content_music_play_main"/>
+                            <include layout="@layout/content_music_play_main" />
                         </FrameLayout>
 
                     </LinearLayout>
@@ -102,7 +105,7 @@
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/play_btn_prev"
+                    app:srcCompat="@drawable/play_btn_prev_w"
                     android:id="@+id/btnPre"
                     android:layout_weight="2"
                     android:background="@android:color/transparent"
@@ -120,7 +123,7 @@
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/play_btn_next"
+                    app:srcCompat="@drawable/play_btn_next_w"
                     android:id="@+id/btnNext"
                     android:layout_weight="2"
                     android:background="@android:color/transparent"
@@ -138,14 +141,14 @@
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1">
 
                 <SeekBar
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
                     android:id="@+id/MusicSeekBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:progressTint="@color/theme_color_primary"
                     android:thumb="@drawable/abc_btn_switch_to_on_mtrl_00001r" />
@@ -153,29 +156,29 @@
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1">
 
                 <TextView
-                    android:text="    "
+                    android:id="@+id/Dtime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/Dtime"
-                    android:textAlignment="textStart"
-                    android:textColor="@android:color/white"
+                    android:layout_marginLeft="16dp"
                     android:layout_weight="1"
-                    android:layout_marginLeft="16dp" />
+                    android:text="    "
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/white" />
 
                 <TextView
+                    android:id="@+id/LeftTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/LeftTime"
+                    android:layout_marginRight="16dp"
+                    android:layout_weight="1"
                     android:text="    "
                     android:textAlignment="textEnd"
-                    android:textColor="@android:color/white"
-                    android:layout_weight="1"
-                    android:layout_marginRight="16dp" />
+                    android:textColor="@android:color/white" />
 
             </TableRow>
 

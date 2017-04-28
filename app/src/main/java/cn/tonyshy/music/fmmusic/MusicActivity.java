@@ -1,19 +1,14 @@
 package cn.tonyshy.music.fmmusic;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.gesture.Gesture;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,12 +19,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TabHost;
-import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cn.tonyshy.music.fmmusic.Music.ImageLoader;
 import cn.tonyshy.music.fmmusic.Music.MusicInfo;
-import cn.tonyshy.music.fmmusic.Music.MusicListAdapter2;
+import cn.tonyshy.music.fmmusic.Music.MusicListAdapter;
 
 import java.text.SimpleDateFormat;
 
@@ -89,7 +84,7 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
         }
         //tab音乐列表
         ListView listView = (ListView) findViewById(R.id.musicPlayList);
-        MusicListAdapter2 musicAdapter =new MusicListAdapter2(MainActivity.musicList,this);
+        MusicListAdapter musicAdapter =new MusicListAdapter(listView,MainActivity.musicList,this,MusicListAdapter.MUSIC_ACTIVITY);
         Log.d("liaowm7",""+MainActivity.musicList.size());
         listView.setAdapter(musicAdapter);
 
@@ -117,6 +112,7 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
                 return false;
             }
         });
+        Log.d("LifeCycle", "MusicActivity onCreate: ");
     }
     @Override
     public void startActivity(Intent intent) {
@@ -187,7 +183,7 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
             if(musicService.getCurrentPlayingInfo()!=null) {
                 Log.d("liaowm5","musicService.getmusicDirList().size()"+musicService.getCurrentPlayingInfo().getmusicTitle());
                 MusicInfo musicInfo = musicService.getCurrentPlayingInfo();
-                imageView.setImageBitmap(musicInfo.getBitmap());
+                imageView.setImageBitmap(ImageLoader.customGetBitmapFromUri(MusicActivity.this,musicInfo.getAlbum_uri(),imageView.getWidth(),imageView.getHeight()));
                 //动态更新toolbar
                 Toolbar toolbar=(Toolbar) findViewById(R.id.toolbar);
                 toolbar.setTitle(musicService.getCurrentPlayingInfo().getmusicTitle());
@@ -195,9 +191,9 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
             }
             //定时更新播放UI
             if(musicService.mp.isPlaying())
-                btnPlayOrPause.setImageResource(R.drawable.play_btn_pause);
+                btnPlayOrPause.setImageResource(R.drawable.play_btn_pause_w);
             else
-                btnPlayOrPause.setImageResource(R.drawable.play_btn_play);
+                btnPlayOrPause.setImageResource(R.drawable.play_btn_play_w);
 
             DTime.setText(time.format(musicService.mp.getCurrentPosition()));
             LeftTime.setText("-"+time.format(musicService.mp.getDuration()-musicService.mp.getCurrentPosition()));
@@ -256,6 +252,9 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
         seekBar.setMax(musicService.mp.getDuration());
         handler.post(runnable);
         super.onResume();
+        Intent mIntent = new Intent(MusicService.NOTIFY);
+        mIntent.setComponent(component);
+        startService(mIntent);
         Log.d("hint", "handler post runnable");
     }
     public void onPlayModeOclick(View view){
@@ -304,16 +303,17 @@ public class MusicActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
+    public void onNewIntent(Intent intent){
+        super.onNewIntent(intent);
+        Log.d("LifeCycle", "MusicActivity onNewIntent: ");
+    }
+    @Override
     public void onDestroy() {
         handler.removeCallbacks(runnable);
-        /*
-        if (isBind) {
-            unbindService(sc);
-            isBind = false;
-        }*/
         //Intent intent = new Intent(MusicActivity.this, MusicService.class);
         //stopService(intent);
         super.onDestroy();
+        Log.d("LifeCycle", "MusicActivity onDestroy: ");
     }
     /**
      *  tabHost 部分

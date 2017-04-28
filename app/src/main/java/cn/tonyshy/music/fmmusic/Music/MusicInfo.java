@@ -1,6 +1,7 @@
 package cn.tonyshy.music.fmmusic.Music;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 /**
 * Created by Liaowm5 on 2016-12-28.
@@ -28,15 +29,16 @@ public class MusicInfo {
     /** 专辑封面id*/
     private int album_id;
 
-    private Bitmap bitmap;
+    private Uri album_uri;
 
-    public Bitmap getBitmap() {
-        return bitmap;
+    public Uri getAlbum_uri() {
+        return album_uri;
     }
 
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
+    public void setAlbum_uri(Uri album_uri) {
+        this.album_uri = album_uri;
     }
+
     public int getAlbum_id() {
         return album_id;
     }

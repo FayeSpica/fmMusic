@@ -22,6 +22,7 @@ import android.util.Log;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
+import cn.tonyshy.music.fmmusic.Music.ImageLoader;
 import cn.tonyshy.music.fmmusic.Music.MusicInfo;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import java.util.Random;
 
 public class MusicService extends Service {
 
-    private int NOTIFICATION_ID=2;
+    private int NOTIFICATION_ID=1;
 
     private ArrayList<MusicInfo> musicDirList = new ArrayList<MusicInfo>();
     public int musicIndex = 0;
@@ -47,6 +48,7 @@ public class MusicService extends Service {
     public static final String PAUSE_ACTION = "cn.tonyshy.music.fmmusic.MusicService.PAUSE_ACTION";
     public static final String NEXT_ACTION = "cn.tonyshy.music.fmmusic.MusicService.NEXT_ACTION";
     public static final String PREVIOUS_ACTION = "cn.tonyshy.music.fmmusic.MusicService.PREVIOUS_ACTION";
+    public static final String NOTIFY = "cn.tonyshy.music.fmmusic.MusicService.NOTIFY";
 
     public MusicService() {
         /*
@@ -60,6 +62,10 @@ public class MusicService extends Service {
             e.printStackTrace();
         }*/
 
+    }
+    public void showNotification(){
+        getNotificationManager().notify(NOTIFICATION_ID,getNotification());
+        //startForeground(NOTIFICATION_ID,getNotification());
     }
     public void timing(int time) {
         Intent intent = new Intent(MusicService.PLAY_OR_PAUSE_ACTION);
@@ -76,7 +82,7 @@ public class MusicService extends Service {
             mp.prepare();
             mp.start();
             notifyUpdate();
-            startForeground(NOTIFICATION_ID,getNotification());
+            showNotification();
         } catch (Exception e) {
             Log.d("hint","can't get to the song"+musicDirList.get(musicIndex).getMusicPath());
             Log.d("hint",Environment.getDataDirectory().getAbsolutePath());
@@ -189,22 +195,25 @@ public class MusicService extends Service {
 
             }
         });
-
-        String action = intent.getAction();
-        if(action!=null) {
-            Log.d("liaowm11",action);
-            if (action.equals(PLAY_ACTION)) {
-                mp.start();
-            } else if (action.equals(PLAY_OR_PAUSE_ACTION)) {
-                Log.d("liaowm9", "PLAY_OR_PAUSE_ACTION");
-                playOrPause();
-            } else if (action.equals(PAUSE_ACTION)) {
-                Log.d("liaowm9", "PAUSE_ACTION");
-                mp.pause();
-            } else if (action.equals(NEXT_ACTION)) {
-                nextMusic();
-            } else if (action.equals(PREVIOUS_ACTION)) {
-                preMusic();
+        if(intent!=null) {
+            String action = intent.getAction();
+            if (action != null) {
+                Log.d("liaowm11", action);
+                if (action.equals(PLAY_ACTION)) {
+                    mp.start();
+                } else if (action.equals(PLAY_OR_PAUSE_ACTION)) {
+                    Log.d("liaowm9", "PLAY_OR_PAUSE_ACTION");
+                    playOrPause();
+                } else if (action.equals(PAUSE_ACTION)) {
+                    Log.d("liaowm9", "PAUSE_ACTION");
+                    mp.pause();
+                } else if (action.equals(NEXT_ACTION)) {
+                    nextMusic();
+                } else if (action.equals(PREVIOUS_ACTION)) {
+                    preMusic();
+                }else if(action.equals(NOTIFY)){
+                    showNotification();
+                }
             }
         }
         return super.onStartCommand(intent,flags,startId);
@@ -251,7 +260,7 @@ public class MusicService extends Service {
     private NotificationManager getNotificationManager(){
         return (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
     }
-    @TargetApi(16)
+
     private Notification getNotification(){
         initRemoteView();
         Intent intent=new Intent(this,MusicActivity.class);
@@ -261,14 +270,14 @@ public class MusicService extends Service {
 
         Notification notification=
                 builder.setSmallIcon(R.drawable.actionbar_music_selected)
-                        .setLargeIcon(getCurrentPlayingInfo().getBitmap())
+                        .setLargeIcon(ImageLoader.getBitmap(this,getCurrentPlayingInfo().getAlbum_uri()))
                         .setContentIntent(pi)
                         .setContentText(getCurrentPlayingInfo().getmusicTitle()+" - "+getCurrentPlayingInfo().getMusicArtist())
                         .setCustomBigContentView(mRemoteViews)
                         .setPriority(Notification.PRIORITY_MAX)
                         .build();
 
-
+        notification.flags |=Notification.FLAG_NO_CLEAR;
         return notification;
     }
 
@@ -279,7 +288,7 @@ public class MusicService extends Service {
         mRemoteViews=new RemoteViews(getPackageName(),R.layout.notification_layout);
         mRemoteViews.setTextViewText(R.id.re_title,getCurrentPlayingInfo().getmusicTitle());
         mRemoteViews.setTextViewText(R.id.re_Artist,getCurrentPlayingInfo().getMusicArtist());
-        mRemoteViews.setImageViewBitmap(R.id.re_musicImageView,getCurrentPlayingInfo().getBitmap());
+        mRemoteViews.setImageViewBitmap(R.id.re_musicImageView, ImageLoader.getBitmap(this,getCurrentPlayingInfo().getAlbum_uri()));
         mRemoteViews.setImageViewBitmap(R.id.re_ibtn_pre, BitmapFactory.decodeResource(getResources(),R.drawable.play_btn_prev));
         mRemoteViews.setImageViewBitmap(R.id.re_ibtn_next, BitmapFactory.decodeResource(getResources(),R.drawable.play_btn_next));
 

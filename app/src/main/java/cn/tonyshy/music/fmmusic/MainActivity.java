@@ -47,6 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.tonyshy.music.fmmusic.Music.ImageLoader;
 import cn.tonyshy.music.fmmusic.Music.MusicInfo;
 import cn.tonyshy.music.fmmusic.Music.MusicListAdapter;
 
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity
 
         //权限申请
         permissionCheck();
-
+        Log.d("LifeCycle", "MainActivity onCreate: ");
     }
     public void UIStart(){
         //音乐服务初始化
@@ -196,6 +197,7 @@ public class MainActivity extends AppCompatActivity
         catch (Exception e){
             e.printStackTrace();
         }
+        Log.d("LifeCycle", "MainActivity onDestroy: ");
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -334,15 +336,14 @@ public class MainActivity extends AppCompatActivity
                 setPlayBar(musicInfoTmp);
             }
             //定时更新
-            if(musicService.mp.isPlaying())
+            if(musicService.mp.isPlaying()) {
                 control.setImageResource(R.drawable.pause_btn);
+                progressBar.setMax(musicService.mp.getDuration());
+                progressBar.setProgress(musicService.mp.getCurrentPosition());
+            }
             else
                 control.setImageResource(R.drawable.play_btn);
 
-            //musicTime.setText(time.format(musicService.mp.getCurrentPosition()) + "/"
-            //       + time.format(musicService.mp.getDuration()));
-            progressBar.setMax(musicService.mp.getDuration());
-            progressBar.setProgress(musicService.mp.getCurrentPosition());
             handler.postDelayed(runnable, 100);
         }
     };
@@ -356,11 +357,8 @@ public class MainActivity extends AppCompatActivity
         getMusicInfo(cursor);
         cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, "duration > 60000", null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
         getMusicInfo(cursor);
-        musicAdapter =new MusicListAdapter(musicList,this);
+        musicAdapter =new MusicListAdapter(listView,musicList,this,MusicListAdapter.MAIN_ACTIVITY);
         listView.setAdapter(musicAdapter);
-
-        LoadImage loadImage=new LoadImage();
-        loadImage.execute();
 
         //初始化播放列表
         musicService.setmusicDirList(musicList);
@@ -379,7 +377,6 @@ public class MainActivity extends AppCompatActivity
                 //musicService.setmusicDirList(arrayList);
                 //Log.d("liaowm5","arrayList.size()="+arrayList.size())
 
-
                 musicService.mp.start();
                 timing(1);
                 setPlayBar(musicInfoTmp);
@@ -389,11 +386,7 @@ public class MainActivity extends AppCompatActivity
     }
     public void setPlayBar(MusicInfo musicInfo){
         ImageView playbarImage=(ImageView) findViewById(R.id.playbar_img);
-        if(musicInfo.getBitmap()==null)
-            playbarImage.setImageResource(R.drawable.placeholder_disk_210);
-        else
-            playbarImage.setImageBitmap(musicInfo.getBitmap());
-
+        playbarImage.setImageBitmap(ImageLoader.getBitmap(this,musicInfo.getAlbum_uri()));
         TextView playbar_info=(TextView)findViewById(R.id.playbar_info);
         TextView playbar_singer=(TextView)findViewById(R.id.playbar_singer);
 
@@ -411,91 +404,11 @@ public class MainActivity extends AppCompatActivity
             info.setMusicArtist(cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)));
             info.setmusicAlbum(cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)));
             info.setMusicPath(cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)));
-
-                /*
-                Bitmap bm = null;
-
-                String album_uri = "content://media/external/audio/albumart/"+cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)); // 专辑Uri对应的字符串
-                Uri albumUri =Uri.parse(album_uri) ; cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID));
-                   */
-            // 取图片 ==> 得到一个输入流
-                /*
-                BitmapFactory.Options opts = new BitmapFactory.Options();
-                opts.inPreferredConfig = Bitmap.Config.RGB_565;
-                try {
-                    InputStream is = getContentResolver().openInputStream(albumUri);
-                    if (null != is) {
-                        bm = BitmapFactory.decodeStream(is);
-                        info.setBitmap(bm);
-                    }
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                    Resources r = getResources();
-                    info.setBitmap(BitmapFactory.decodeResource(r, R.drawable.placeholder_disk_210));
-                    Log.d("liaowm7",""+info.getmusicTitle());
-                }*/
-            info.setBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder_disk_210));
+            //get imageUri
+            info.setAlbum_uri(Uri.parse("content://media/external/audio/albumart/"+cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))));
             musicList.add(info);
 
             Log.d("hint", (cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)))+""+cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)));
-        }
-    }
-    private class LoadImage extends AsyncTask {
-        //后台线程执行时
-        @Override
-        protected Object doInBackground(Object... params) {
-            // 耗时操作
-            Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, null, "duration > 60000", null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
-            Cursor cursor1 = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, "duration > 60000", null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
-            for(int i=0;i<cursor.getCount();i++){
-                Log.d("liaowm7",""+musicList.get(i).getmusicTitle());
-                if(cursor.moveToNext()) {
-                    load(cursor, musicList.get(i));
-                    Log.d("liaowm7", "" + "INTERNAL_CONTENT_URI");
-                }
-            }
-            for(int i=cursor.getCount();i<cursor.getCount()+cursor1.getCount();i++){
-                Log.d("liaowm7",""+musicList.get(i).getmusicTitle());
-                if(cursor1.moveToNext()){
-                    load(cursor1,musicList.get(i));
-                    Log.d("liaowm7",""+"EXTERNAL_CONTENT_URI");
-                }
-            }
-            return null;
-        }
-        //后台线程执行结束后的操作，其中参数result为doInBackground返回的结果
-        @Override
-        protected void onPostExecute(Object result) {
-            super.onPostExecute(result);
-            //musicAdapter =new MusicListAdapter(musicList,MainActivity.this);
-            musicAdapter.notifyDataSetChanged();
-        }
-
-        private void load(Cursor cursor,MusicInfo info){
-            Bitmap bm = null;
-
-            String album_uri = "content://media/external/audio/albumart/"+cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)); // 专辑Uri对应的字符串
-            Uri albumUri =Uri.parse(album_uri) ;
-
-            // 取图片 ==> 得到一个输入流
-
-            BitmapFactory.Options opts = new BitmapFactory.Options();
-            opts.inPreferredConfig = Bitmap.Config.RGB_565;
-            try {
-                InputStream is = getContentResolver().openInputStream(albumUri);
-                if (null != is) {
-                    bm = BitmapFactory.decodeStream(is);
-                    info.setBitmap(bm);
-                    Log.d("liaowm7",""+"Hit!");
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                Resources r = getResources();
-                info.setBitmap(BitmapFactory.decodeResource(r, R.drawable.placeholder_disk_210));
-                Log.d("liaowm7",""+info.getmusicTitle());
-            }
         }
     }
 }

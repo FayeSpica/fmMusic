@@ -1,61 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@color/normalColor">
+        android:layout_height="110dp"
+        android:background="@android:color/transparent">
 
         <RelativeLayout
-            android:layout_width="100dp"
-            android:layout_height="100dp">
+            android:layout_width="110dp"
+            android:layout_height="110dp">
 
             <ImageView
                 android:id="@+id/re_musicImageView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_margin="0dp"
                 android:scaleType="fitCenter" />
         </RelativeLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center">
+            android:background="#D0FFFFFF"
+            android:gravity="center"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/re_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:width="160dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
                 android:singleLine="true"
                 android:text="歌曲名"
-                android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textColor="@color/notification_content"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/re_Artist"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/re_title"
-                android:width="240dp"
+                android:layout_marginBottom="6dp"
+                android:layout_marginLeft="6dp"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="艺术家"
-                android:textColor="@color/white"
+                android:textColor="@color/notification_content"
                 android:textSize="12dp" />
+
+            <ImageView
+                android:id="@+id/img_split"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginTop="6dp"
+                android:background="#50000000" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:layout_below="@+id/re_Artist"
                 android:orientation="horizontal">
 
@@ -90,8 +99,5 @@
                     app:srcCompat="@drawable/play_btn_next" />
             </LinearLayout>
 
-
-        </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
-
-</LinearLayout>

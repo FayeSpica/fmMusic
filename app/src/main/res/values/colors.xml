@@ -41,7 +41,7 @@
     <color name="abc_search_url_text_pressed">@android:color/black</color>
     <color name="abc_search_url_text_selected">@android:color/black</color>
     <color name="accent_material_dark">@color/material_deep_teal_200</color>
-    <color name="actionBtnPrs">#ffd9dbdc</color>
+    <color name="actionBtnPrs">#d9dbdc</color>
     <color name="actionbarTabUnselected">#D3D3D3</color>
     <color name="addToPlayListDialogHeader">#ff303030</color>
     <color name="addToPlayListDisabled">#ff888888</color>
